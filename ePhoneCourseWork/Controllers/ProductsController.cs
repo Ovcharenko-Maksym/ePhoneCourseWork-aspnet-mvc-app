@@ -83,7 +83,7 @@ namespace ePhoneCourseWork.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, [Bind("Name,Image,Description,Color,Price")] Product product)
+        public IActionResult Edit(int id, [Bind("Id,Name,Image,Description,Color,Price")] Product product)
         {
             if (!ModelState.IsValid)
             {
