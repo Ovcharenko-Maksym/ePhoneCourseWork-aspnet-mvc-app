@@ -30,5 +30,8 @@ namespace ePhoneCourseWork.Data
         public DbSet<Sale> Sales { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<BlacklistedCustomer> BlacklistedCustomers { get; set; }
-    }
+
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }  
+
+	}
 }

@@ -14,7 +14,8 @@ namespace ePhoneCourseWork.Data
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
-                context.Database.EnsureCreated();
+				context.Database.EnsureDeleted();
+				context.Database.EnsureCreated();
                 //Products
                 if (!context.Products.Any())
                 {

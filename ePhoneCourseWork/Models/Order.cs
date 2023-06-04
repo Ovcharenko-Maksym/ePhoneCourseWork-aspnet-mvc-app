@@ -16,13 +16,16 @@ namespace ePhoneCourseWork.Models
         public DateTime OrderDateTime { get; set; }
         public Status Status { get; set; }
         public double TotalPrice { get; set; }
+		public string Email { get; set; }
+		public string UserId { get; set; }
 
-        //Relationships
-        public List<OrderItem> OrderItems { get; set; }
+
+		//Relationships
+		public List<OrderItem> OrderItems { get; set; }
 
         //Customer
-        public int CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        //public int CustomerId { get; set; }
+        //[ForeignKey("CustomerId")]
+       // public Customer Customer { get; set; }
     }
 }

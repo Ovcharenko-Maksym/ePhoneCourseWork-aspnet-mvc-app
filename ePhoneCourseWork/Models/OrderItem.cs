@@ -8,11 +8,13 @@ namespace ePhoneCourseWork.Models
         [Key]
         public int Id { get; set; }
         public int quantity { get; set; }
+		public int Amount { get; set; }
+		public double Price { get; set; }
 
-        //Relationships
+		//Relationships
 
-        //Product
-        public int ProductId { get; set; }
+		//Product
+		public int ProductId { get; set; }
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
 

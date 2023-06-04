@@ -108,8 +108,11 @@ namespace ePhoneCourseWork.Migrations
                     b.Property<string>("CityName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HouseNumber")
                         .HasColumnType("nvarchar(max)");
@@ -126,6 +129,9 @@ namespace ePhoneCourseWork.Migrations
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -141,8 +147,14 @@ namespace ePhoneCourseWork.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
                     b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("quantity")
                         .HasColumnType("int");
@@ -165,13 +177,17 @@ namespace ePhoneCourseWork.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -206,6 +222,29 @@ namespace ePhoneCourseWork.Migrations
                     b.ToTable("Sales");
                 });
 
+            modelBuilder.Entity("ePhoneCourseWork.Models.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShoppingCartId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("ePhoneCourseWork.Models.BlacklistedCustomer", b =>
                 {
                     b.HasOne("ePhoneCourseWork.Models.Admin", "Admin")
@@ -227,13 +266,9 @@ namespace ePhoneCourseWork.Migrations
 
             modelBuilder.Entity("ePhoneCourseWork.Models.Order", b =>
                 {
-                    b.HasOne("ePhoneCourseWork.Models.Customer", "Customer")
+                    b.HasOne("ePhoneCourseWork.Models.Customer", null)
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
+                        .HasForeignKey("CustomerId");
                 });
 
             modelBuilder.Entity("ePhoneCourseWork.Models.OrderItem", b =>
@@ -272,6 +307,15 @@ namespace ePhoneCourseWork.Migrations
                     b.Navigation("Admin");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("ePhoneCourseWork.Models.ShoppingCartItem", b =>
+                {
+                    b.HasOne("ePhoneCourseWork.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ePhoneCourseWork.Models.Admin", b =>

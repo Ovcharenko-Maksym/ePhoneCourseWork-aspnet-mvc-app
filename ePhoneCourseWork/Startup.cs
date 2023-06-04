@@ -1,7 +1,9 @@
 using ePhoneCourseWork.Data;
+using ePhoneCourseWork.Data.Cart;
 using ePhoneCourseWork.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,9 +31,12 @@ namespace ePhoneCourseWork
             //DbContextConfiguration
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddScoped<IProductsService, ProductsService>();
-
-            services.AddControllersWithViews();
-        }
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+			services.AddSession();
+			services.AddControllersWithViews();
+			services.AddScoped<IOrdersService, OrdersService>();
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,8 +55,9 @@ namespace ePhoneCourseWork
             app.UseStaticFiles();
 
             app.UseRouting();
+			app.UseSession();
 
-            app.UseAuthorization();
+			app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
