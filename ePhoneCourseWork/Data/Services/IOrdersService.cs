@@ -8,7 +8,7 @@ namespace ePhoneCourseWork.Data.Services
 	public interface IOrdersService
 	{
 		void StoreOrder(List<ShoppingCartItem> items, string userId, string userEmailAddress);
-		List<Order> GetOrdersByUserId(string userId);
+		List<Order> GetOrdersByUserIdAndRole(string userId, string userRole);
 	}
 
 }

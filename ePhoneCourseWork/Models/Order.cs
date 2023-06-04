@@ -18,7 +18,9 @@ namespace ePhoneCourseWork.Models
         public double TotalPrice { get; set; }
 		public string Email { get; set; }
 		public string UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
 
+        public ApplicationUser User { get; set; }
 
 		//Relationships
 		public List<OrderItem> OrderItems { get; set; }

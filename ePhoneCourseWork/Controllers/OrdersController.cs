@@ -1,5 +1,6 @@
 ﻿using ePhoneCourseWork.Data.Cart;
 using ePhoneCourseWork.Data.Services;
+using ePhoneCourseWork.Data.Static;
 using ePhoneCourseWork.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace ePhoneCourseWork.Controllers
 {
-	public class OrdersController : Controller
+    [Authorize]
+    public class OrdersController : Controller
 	{
 		private readonly IProductsService _productsService;
 		private readonly ShoppingCart _shoppingCart;
@@ -23,8 +25,9 @@ namespace ePhoneCourseWork.Controllers
 
 		public IActionResult Index()
 		{
-			string userId = "";
-			var orders = _ordersService.GetOrdersByUserId(userId);
+			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			string userRole = User.FindFirstValue(ClaimTypes.Role);
+			var orders = _ordersService.GetOrdersByUserIdAndRole(userId,userRole);
 			return View(orders);
 		}
 
@@ -63,8 +66,8 @@ namespace ePhoneCourseWork.Controllers
 		public IActionResult CompleteOrder()
 		{
 			var items = _shoppingCart.GetShoppingCartItems();
-			string userId = "";
-			string userEmailAddress = "";
+			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
 			_ordersService.StoreOrder(items, userId, userEmailAddress);
 			_shoppingCart.ClearShoppingCart();

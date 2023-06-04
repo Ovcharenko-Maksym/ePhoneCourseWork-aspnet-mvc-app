@@ -15,14 +15,17 @@ namespace ePhoneCourseWork.Data.Services
 			_context = context;
 		}
 
-		public List<Order> GetOrdersByUserId(string userId)
+		public List<Order> GetOrdersByUserIdAndRole(string userId, string userRole)
 		{
 			var orders = _context.Orders
 				.Include(n => n.OrderItems)
 				.ThenInclude(n => n.Product)
-				.Where(n => n.UserId == userId)
+				.Include(n => n.User)
 				.ToList();
-
+			if(userRole != "Admin")
+			{
+				orders = orders.Where(n => n.UserId == userId).ToList();
+			}
 			return orders;
 		}
 

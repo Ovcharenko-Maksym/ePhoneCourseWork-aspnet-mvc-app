@@ -1,12 +1,15 @@
 ﻿using ePhoneCourseWork.Data;
 using ePhoneCourseWork.Data.Services;
+using ePhoneCourseWork.Data.Static;
 using ePhoneCourseWork.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace ePhoneCourseWork.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     public class ProductsController : Controller
     {
         private readonly IProductsService _service;
@@ -14,11 +17,13 @@ namespace ePhoneCourseWork.Controllers
         {
             _service = service;
         }
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var allProducts = _service.GetAll();
             return View(allProducts);
         }
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             var productDetail = _service.GetProductById(id);
@@ -60,7 +65,7 @@ namespace ePhoneCourseWork.Controllers
             _service.Delete(id);
             return RedirectToAction(nameof(Index));
         }
-
+        [AllowAnonymous]
         public IActionResult Filter(string searchString)
         {
             var allProducts = _service.GetAll();
