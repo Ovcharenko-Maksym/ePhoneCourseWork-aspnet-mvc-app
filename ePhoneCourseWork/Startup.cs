@@ -1,8 +1,11 @@
 using ePhoneCourseWork.Data;
 using ePhoneCourseWork.Data.Services;
+using ePhoneCourseWork.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +33,15 @@ namespace ePhoneCourseWork
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddScoped<IProductsService, ProductsService>();
 
+            //autorisation 
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddMemoryCache();
+            services.AddSession();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -50,6 +62,11 @@ namespace ePhoneCourseWork
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
+
+            //autorisation 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseAuthorization();
 
@@ -62,6 +79,7 @@ namespace ePhoneCourseWork
 
             //seed db
             AppDbInitializer.Seed(app);
+            AppDbInitializer.SeedUsersAndRolsAsync(app).Wait();
         }
     }
 }
