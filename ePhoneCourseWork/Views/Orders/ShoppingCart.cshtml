@@ -61,10 +61,10 @@
 		</table>
 		<div class="text-center">
 			<div class="btn-group">
-				<a class="btn btn-outline-primary" asp-action="CompleteOrder">
+				@*<a class="btn btn-outline-primary" asp-action="CompleteOrder">
 					Complete order
-				</a>
-
+				</a>*@
+				<div id="paypal-btn"></div>
 				<a class="btn btn-outline-success" asp-controller="Products" asp-action="Index">
 					Add more items
 				</a>
@@ -73,3 +73,44 @@
 
 	</div>
 </div>
+
+@section Scripts {
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+    <script>
+
+        let _total = @Html.Raw(Model.ShoppingCartTotal.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+        paypal.Button.render({
+            env: 'sandbox',
+            client: {
+                sandbox: 'AZ31IUiA_Uty2wXxHV0xbwt9OuNDQz8QinDPnEAQuIzWh88LkWA372noZIdZKchaVzJZWEx3zt2BVw-f'
+            },
+            locale: 'en_US',
+            style: {
+                size: 'small',
+                color: 'gold',
+                shape: 'pill'
+            },
+            commit: true,
+
+            payment: function (data, actions) {
+                return actions.payment.create({
+                    transactions:[{
+                        amount: {
+                            total: _total,
+                            currency: 'USD'
+                        }
+                    }]
+                });
+            },
+
+            onAuthorize: function (data, actions) {
+                return actions.payment.execute().then(function (){
+                    var url = '@Url.Action("CompleteOrder", "Orders", new { })';
+                    window.location.href = url;
+                });
+            }
+        }, '#paypal-btn');
+    </script>
+}
