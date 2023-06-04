@@ -23,9 +23,5 @@ namespace ePhoneCourseWork.Models
 		//Relationships
 		public List<OrderItem> OrderItems { get; set; }
 
-        //Customer
-        //public int CustomerId { get; set; }
-        //[ForeignKey("CustomerId")]
-       // public Customer Customer { get; set; }
     }
 }

@@ -1,9 +1,15 @@
 ﻿using ePhoneCourseWork.Data.Enums;
+using ePhoneCourseWork.Data.Static;
 using ePhoneCourseWork.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ePhoneCourseWork.Data
 {
@@ -14,12 +20,14 @@ namespace ePhoneCourseWork.Data
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
-				context.Database.EnsureDeleted();
-				context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
                 //Products
                 if (!context.Products.Any())
                 {
-                    context.Products.AddRange(new List<Product>()
+                    try
+                    {
+                        context.Products.AddRange(new List<Product>()
                     {
                         new Product()
                         {
@@ -94,8 +102,72 @@ namespace ePhoneCourseWork.Data
                             Price = 699.99,
                         },
                     });
-                    context.SaveChanges();
+                        context.SaveChanges();
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        var innerException = ex.InnerException;
+                        while (innerException != null)
+                        {
+                            Console.WriteLine(innerException.Message);
+                            innerException = innerException.InnerException;
+                        }
+                    }
                 }
+            }
+        }
+
+        public static async Task SeedUsersAndRolsAsync(IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            {
+                //Roles
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                }
+                if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                }
+
+                //Users
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                string adminUserEmail = "admin@ephone.com";
+                var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
+                if (adminUser == null)
+                {
+                    var newAdminUser = new ApplicationUser()
+                    {
+                        FullName = "Admin User",
+                        UserName = "admin-user",
+                        Email = adminUserEmail,
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(newAdminUser, "Coding@1234?");
+                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+
+                }
+
+
+                string appUserEmail = "user@ephone.com";
+                var appUser = await userManager.FindByEmailAsync(appUserEmail);
+                if (appUser == null)
+                {
+                    var newAppUser = new ApplicationUser()
+                    {
+                        FullName = "Appication User",
+                        UserName = "app-user",
+                        DateOfBirth = new DateTime(2000,1,1),
+                        PhoneNumber = "0660261275",
+                        Email = appUserEmail,
+                        EmailConfirmed = true
+                    };
+                    await userManager.CreateAsync(newAppUser, "Coding@1234?");
+                    await userManager.AddToRoleAsync(newAppUser, UserRoles.User);
+                }
+
             }
         }
     }

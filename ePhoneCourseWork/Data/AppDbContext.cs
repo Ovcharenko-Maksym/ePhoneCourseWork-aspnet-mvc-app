@@ -1,9 +1,11 @@
 ﻿using ePhoneCourseWork.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ePhoneCourseWork.Data
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
@@ -26,9 +28,7 @@ namespace ePhoneCourseWork.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Sale> Sales { get; set; }
-        public DbSet<Admin> Admins { get; set; }
         public DbSet<BlacklistedCustomer> BlacklistedCustomers { get; set; }
 
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }  

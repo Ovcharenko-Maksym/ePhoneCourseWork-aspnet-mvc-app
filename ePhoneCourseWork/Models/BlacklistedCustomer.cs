@@ -10,14 +10,5 @@ namespace ePhoneCourseWork.Models
         public int Id { get; set; }
         public DateTime BlacklistedDateTime { get; set; }
 
-        //Customer
-        public int CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
-
-        //Admin
-        public int AdminId { get; set; }
-        [ForeignKey("AdminId")]
-        public Admin Admin { get; set; }
     }
 }

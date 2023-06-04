@@ -10,11 +10,6 @@ namespace ePhoneCourseWork.Models
         public int Id { get; set; }
         public DateTime SaleDateTime { get; set; }
 
-        //Admin
-        public int AdminId { get; set; }
-        [ForeignKey("AdminId")]
-        public Admin Admin { get; set; }
-
         //Order
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]
