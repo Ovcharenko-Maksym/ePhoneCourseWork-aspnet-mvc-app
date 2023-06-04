@@ -35,8 +35,21 @@
                         <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
+                        <td class="align-middle">
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            @if (item.IsBlacklisted)
+                            {
+                                <span class="text-danger">Blacklisted</span>
+                                <a asp-action="RemoveFromBlacklist" asp-route-userId="@item.Id">Remove from Blacklist</a>
+                            }
+                            else
+                            {
+                                <a asp-action="BlacklistUser" asp-route-userId="@item.Id">Blacklist User</a>
+                            }
 
-
+                        }
+                        </td>
                     </tr>
                 }
             </tbody>

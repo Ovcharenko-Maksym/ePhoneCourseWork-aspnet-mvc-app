@@ -11,5 +11,6 @@ namespace ePhoneCourseWork.Models
         [Display(Name = "Date of birth")]
         public DateTime DateOfBirth { get; set; }
 
+        public bool IsBlacklisted { get; set; }
     }
 }

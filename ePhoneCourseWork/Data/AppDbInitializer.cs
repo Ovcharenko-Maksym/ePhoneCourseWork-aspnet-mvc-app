@@ -20,7 +20,7 @@ namespace ePhoneCourseWork.Data
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
-                //context.Database.EnsureDeleted();
+                context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 //Products
                 if (!context.Products.Any())
@@ -159,10 +159,11 @@ namespace ePhoneCourseWork.Data
                     {
                         FullName = "Appication User",
                         UserName = "app-user",
-                        DateOfBirth = new DateTime(2000,1,1),
+                        DateOfBirth = new DateTime(2000, 1, 1),
                         PhoneNumber = "0660261275",
                         Email = appUserEmail,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        IsBlacklisted = false
                     };
                     await userManager.CreateAsync(newAppUser, "Coding@1234?");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.User);
