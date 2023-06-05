@@ -1,6 +1,9 @@
-﻿using ePhoneCourseWork.Models;
+﻿using ePhoneCourseWork.Data.Static;
+using ePhoneCourseWork.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace ePhoneCourseWork.Controllers
@@ -14,21 +17,16 @@ namespace ePhoneCourseWork.Controllers
             _userManager = userManager;
         }
 
-
         [HttpPost]
-        public IActionResult BlacklistUser(string userId)
+        public async Task <IActionResult> BlacklistUser(string userId)
         {
-            var userTask =  _userManager.FindByIdAsync(userId);
-
-            userTask.Wait();
-
-            var user = userTask.Result;
+            var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                user.IsBlacklisted = true;
-                _userManager.UpdateAsync(user);
+                await _userManager.AddToRoleAsync(user, UserRoles.BlackListed);
+                await _userManager.UpdateAsync(user);
             }
-            return View();
+            return RedirectToAction("Users", "Account");
         }
 
 
@@ -38,10 +36,10 @@ namespace ePhoneCourseWork.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                user.IsBlacklisted = false;
+                await _userManager.RemoveFromRoleAsync(user, UserRoles.BlackListed);
                 await _userManager.UpdateAsync(user);
             }
-            return RedirectToAction("Users");
+            return RedirectToAction("Users", "Account");
         }
     }
 }

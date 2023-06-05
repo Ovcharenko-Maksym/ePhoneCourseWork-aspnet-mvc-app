@@ -131,6 +131,10 @@ namespace ePhoneCourseWork.Data
                 {
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                 }
+                if (!await roleManager.RoleExistsAsync(UserRoles.BlackListed))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(UserRoles.BlackListed));
+                }
 
                 //Users
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -162,13 +166,11 @@ namespace ePhoneCourseWork.Data
                         DateOfBirth = new DateTime(2000, 1, 1),
                         PhoneNumber = "0660261275",
                         Email = appUserEmail,
-                        EmailConfirmed = true,
-                        IsBlacklisted = false
+                        EmailConfirmed = true
                     };
                     await userManager.CreateAsync(newAppUser, "Coding@1234?");
                     await userManager.AddToRoleAsync(newAppUser, UserRoles.User);
                 }
-
             }
         }
     }

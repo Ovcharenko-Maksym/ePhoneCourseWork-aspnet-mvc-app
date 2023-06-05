@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ApplicationUser>
+﻿@using ePhoneCourseWork.Data.ViewModels
+@model IEnumerable<UserVM>
 
 @{
     ViewData["Title"] = "List of Users";
@@ -36,25 +37,27 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td class="align-middle">
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                        {
-                            @if (item.IsBlacklisted)
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                             {
-                                <span class="text-danger">Blacklisted</span>
-                                <a asp-action="RemoveFromBlacklist" asp-route-userId="@item.Id">Remove from Blacklist</a>
+                                @if (item.Roles.Contains("BlackListed"))
+                                {
+                                    <form method="post" asp-controller="ApplicationUser" asp-action="RemoveFromBlacklist">
+                                        <input type="hidden" name="userId" value="@item.UserId" />
+                                        <input type="submit" value="Remove From Blacklist" />
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-controller="ApplicationUser" asp-action="BlacklistUser">
+                                        <input type="hidden" name="userId" value="@item.UserId"/>
+                                        <input type="submit" value="Blacklist User"/>
+                                    </form>
+                                }
                             }
-                            else
-                            {
-                                <a asp-action="BlacklistUser" asp-route-userId="@item.Id">Blacklist User</a>
-                            }
-
-                        }
                         </td>
                     </tr>
                 }
             </tbody>
-
         </table>
-
     </div>
 </div>

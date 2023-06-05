@@ -24,7 +24,21 @@ namespace ePhoneCourseWork.Controllers
 
         public IActionResult Users()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users
+        .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (user, userRole) => new { User = user, UserRole = userRole })
+        .ToList() // Материализовать результаты первого Join
+        .Join(_context.Roles, ur => ur.UserRole.RoleId, r => r.Id, (userRole, role) => new { userRole.User, RoleName = role.Name })
+        .GroupBy(x => new { x.User.Id, x.User.UserName, x.User.Email })
+        .Select(g => new UserVM
+        {
+            UserId = g.Key.Id,
+            UserName = g.Key.UserName,
+            Email = g.Key.Email,
+            Roles = g.Select(x => x.RoleName).ToList()
+        })
+        .ToList(); // Материализовать окончательный результат
+
+
             return View(users);
         }
 
@@ -103,7 +117,7 @@ namespace ePhoneCourseWork.Controllers
         public IActionResult Logout()
         {
             _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Products");
+            return RedirectToAction("Index", "Products");
         }
 
         public IActionResult AccessDenied(string returnUrl)
