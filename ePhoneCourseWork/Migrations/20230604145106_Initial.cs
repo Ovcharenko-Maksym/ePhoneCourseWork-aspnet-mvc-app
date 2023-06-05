@@ -95,7 +95,7 @@ namespace ePhoneCourseWork.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                 });
-
+            
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
@@ -137,7 +137,7 @@ namespace ePhoneCourseWork.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
+            
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
                 columns: table => new
@@ -157,7 +157,7 @@ namespace ePhoneCourseWork.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
+        
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
                 columns: table => new
@@ -221,7 +221,7 @@ namespace ePhoneCourseWork.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
+            //
             migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
